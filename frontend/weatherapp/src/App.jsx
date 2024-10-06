@@ -1,34 +1,76 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [location, setLocation] = useState('')
+  const [loading, setLoading] = useState(false)
+
+  if (!('process' in window)) {
+    // @ts-ignore
+    window.process = {}
+  }
+
+  const [weatherData, setWeatherData] = useState(false)
+
+  const apiKey = import.meta.env.VITE_WEATHER_API_KEY
+  const apiHost = import.meta.env.VITE_WEATHER_API_HOST
+
+  const getWeatherData = async (e) => {
+    setWeatherData('')
+    e.preventDefault()
+    const endpoint = `https://open-weather13.p.rapidapi.com/city/${location}/EN`
+    const options = {
+      method: 'GET',
+      headers: {
+        'x-rapidapi-key': apiKey,
+        'x-rapidapi-host': apiHost
+      }
+    }
+    setLoading(true)
+    try {
+      const response = await fetch(endpoint, options)
+      const result = await response.json()
+      // set
+      console.log(result)
+      setLoading(false)
+      setLocation('')
+      setWeatherData(result)
+    } catch (error) {
+      console.log(error)
+      setLoading(false)
+    }
+  }
+
+  const handleLocationChange = (e) => {
+    setLocation(e.target.value)
+    console.log(e.target.value)
+  }
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <main>
+      <h1 className='text-3xl'>Weather Wizard</h1>
+
+      <section>
+        <form onSubmit={getWeatherData}>
+          <input className='border-2 rounded border-emerald-400 py-3 px-12 w-1/3' onChange={handleLocationChange} type='text' placeholder='Just type in a city...' />
+          {/* <button type='submit'>Search</button> */}
+        </form>
+      </section>
+
+      <section>
+        {loading && (
+          <p>Loading...</p>
+        )}
+        {weatherData && (
+          <>
+            <h2>City - {weatherData.name}</h2>
+            <p>Temperature - {weatherData.main.temp}</p>
+            <p>Feels like {weatherData.main.feels_like}</p>
+            <p>Humidity is about {weatherData.main.humidity}</p>
+          </>
+        )}
+      </section>
+    </main>
   )
 }
 
