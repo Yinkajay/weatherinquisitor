@@ -12,23 +12,19 @@ function App() {
 
   const [weatherData, setWeatherData] = useState(false)
 
-  const apiKey = import.meta.env.VITE_WEATHER_API_KEY
-  const apiHost = import.meta.env.VITE_WEATHER_API_HOST
+  // const apiKey = import.meta.env.VITE_WEATHER_API_KEY
+  // const apiHost = import.meta.env.VITE_WEATHER_API_HOST
 
   const getWeatherData = async (e) => {
     setWeatherData('')
     e.preventDefault()
-    const endpoint = `https://open-weather13.p.rapidapi.com/city/${location}/EN`
-    const options = {
-      method: 'GET',
-      headers: {
-        'x-rapidapi-key': apiKey,
-        'x-rapidapi-host': apiHost
-      }
-    }
+    const endpoint = `http://localhost:5000/api/weather/?location=${location}`
+    // const options = {
+    //   method: 'GET',
+    // }
     setLoading(true)
     try {
-      const response = await fetch(endpoint, options)
+      const response = await fetch(endpoint)
       const result = await response.json()
       // set
       console.log(result)
