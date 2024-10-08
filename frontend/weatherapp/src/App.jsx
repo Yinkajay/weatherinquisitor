@@ -18,7 +18,7 @@ function App() {
   const getWeatherData = async (e) => {
     setWeatherData('')
     e.preventDefault()
-    const endpoint = `http://localhost:5000/api/weather/?location=${location}`
+    const endpoint = `https://weatherinquisitor.onrender.com/api/weather/?location=${location}`
     // const options = {
     //   method: 'GET',
     // }
